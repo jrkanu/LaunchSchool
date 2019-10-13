@@ -79,7 +79,7 @@ def display_message(msg)
   puts "---+"
 
   # Split message by newlines,
-  msg_by_line = msg.split(/\n/) # split by newlines
+  msg_by_line = msg.split(/\n/)
 
   # decorate first and last lines with +, middle lines with |
   msg_by_line.each do |line|
@@ -108,7 +108,7 @@ end
 
 def get_valid_input(valid_inputs)
   # Use in place of Kernal#gets to only return input if valid.
-  # Input if considered valid if it is included in the passed array.
+  # Input considered valid if it is included in the passed array.
 
   user_input = unabbreviate(gets.chomp.downcase)
 
