@@ -76,7 +76,7 @@ ABBREVIATIONS = {
 
 def display_message(msg)
   # Insert divider between all displayed messages.
-  puts "---+"
+  puts "   |"
 
   # Split message by newlines,
   msg_by_line = msg.split(/\n/)
@@ -84,7 +84,7 @@ def display_message(msg)
   # decorate first and last lines with +, middle lines with |
   msg_by_line.each do |line|
     if line == msg_by_line.first || line == msg_by_line.last
-      puts ">> + " + line
+      puts "   + " + line
     else
       puts "   | " + line
     end
@@ -93,7 +93,8 @@ end
 
 def prompt(msg)
   display_message(msg)
-  print ">> { "
+  print "   |\n"
+  print "   •--{ "
 end
 
 def unabbreviate(string)
@@ -139,25 +140,50 @@ def who_won?(ruleset, player_choice, computer_choice)
     end
 end
 
+def update_score(winner, score)
+  case winner
+  when 'tie'
+    score
+  when 'player'
+    score[:player] += 1
+    score
+  when 'computer'
+    score[:computer] += 1
+    score
+  end
+end
+
+def reset_score(score)
+  score.transform_values! { |score| score = 0 }
+end
+
 def display_results(player_choice, computer_choice, winner)
   winning_message = case winner
-                    when 'tie'
-                      "It's a tie!"
-                    when 'player'
-                      "Player wins!"
-                    when 'computer'
-                      "Computer wins!"
-                    end
+    when 'tie'
+      "It's a tie!"
+    when 'player'
+      "Player wins!"
+    when 'computer'
+      "Computer wins!"
+    end
 
   # Sleep before and after for dramatic effect!
   sleep(0.75)
   display_message( <<~VERIFY
-    You chose: #{player_choice}
-    Computer chose: #{computer_choice}
+    You chose: #{player_choice.upcase}
+    Computer chose: #{computer_choice.upcase}
+
     #{winning_message}
     VERIFY
   )
   sleep(1)
+end
+
+def display_score(score)
+  display_message( <<~SCOREBOARD
+    { PLAYER: #{score[:player]} <|> COMPUTER: #{score[:computer]} }
+    SCOREBOARD
+  )
 end
 
 # { Main Program } ----------------------------------------------------------- #
@@ -177,6 +203,8 @@ ruleset = set_ruleset(ruleset_choice)
 
 display_message("The rulseset has been set to: #{ruleset[:name_str]}")
 
+score = {player: 0, computer: 0}
+
 loop do
   prompt( <<~PLAY
     It's your turn! What will you play?
@@ -189,7 +217,16 @@ loop do
   computer_choice = ruleset[:valid].sample
   winner = who_won?(ruleset, player_choice, computer_choice)
 
+  score = update_score(winner, score)
+
   display_results(player_choice, computer_choice, winner)
+  display_score(score)
+
+  if score.values.any? { |score| score >= 5 }
+    round_winner = score.key(5).to_s.capitalize
+    display_message("***#{round_winner} wins this round!***")
+    score = reset_score(score)
+  end
 
   prompt("Play again?")
   again = get_valid_input(%w(y n))
