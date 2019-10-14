@@ -20,7 +20,7 @@
 
 # Establish constants, CLASSIC_RULES and KASS_RULES
 # Ask user if they want to play classic RPS or Kass version.
-# - set_ruleset(choice)
+# - choose_ruleset(choice)
 # -- if choice == 'classic'
 # --- ruleset = CLASSIC_RULES
 # -- elsif choice == 'kass'
@@ -121,7 +121,7 @@ def get_valid_input(valid_inputs)
   user_input
 end
 
-def set_ruleset(choice)
+def choose_ruleset(choice)
   if choice == 'classic'
     CLASSIC_RULES
   elsif choice == 'kass'
@@ -130,14 +130,13 @@ def set_ruleset(choice)
 end
 
 def who_won?(ruleset, player_choice, computer_choice)
-    case
-    when player_choice == computer_choice
-      'tie'
-    when ruleset[player_choice].include?(computer_choice)
-      'player'
-    when ruleset[computer_choice].include?(player_choice)
-      'computer'
-    end
+  if player_choice == computer_choice
+    'tie'
+  elsif ruleset[player_choice].include?(computer_choice)
+    'player'
+  elsif ruleset[computer_choice].include?(player_choice)
+    'computer'
+  end
 end
 
 def update_score(winner, score)
@@ -154,41 +153,41 @@ def update_score(winner, score)
 end
 
 def reset_score(score)
-  score.transform_values! { |score| score = 0 }
+  score.transform_values! { 0 }
 end
 
 def display_results(player_choice, computer_choice, winner)
   winning_message = case winner
-    when 'tie'
-      "It's a tie!"
-    when 'player'
-      "Player wins!"
-    when 'computer'
-      "Computer wins!"
-    end
+                    when 'tie'
+                      "It's a tie!"
+                    when 'player'
+                      "Player wins!"
+                    when 'computer'
+                      "Computer wins!"
+                    end
 
   # Sleep before and after for dramatic effect!
   sleep(0.75)
-  display_message( <<~VERIFY
+  display_message(<<~RESULTS
     You chose: #{player_choice.upcase}
     Computer chose: #{computer_choice.upcase}
 
     #{winning_message}
-    VERIFY
-  )
+    RESULTS
+                 )
   sleep(1)
 end
 
 def display_score(score)
-  display_message( <<~SCOREBOARD
+  display_message(<<~SCOREBOARD
     { PLAYER: #{score[:player]} <|> COMPUTER: #{score[:computer]} }
     SCOREBOARD
-  )
+                 )
 end
 
 # { Main Program } ----------------------------------------------------------- #
 
-prompt( <<~GREET
+prompt(<<~GREET
   Welcome to Rock, Paper Scissors!
 
   You can play by Classic Rules, or by Sam Kass's rules, otherwise known as
@@ -196,22 +195,22 @@ prompt( <<~GREET
 
   Enter 'classic' or 'kass' to choose which ruleset to play by.
   GREET
-)
+      )
 
 ruleset_choice = get_valid_input(%w(classic kass))
-ruleset = set_ruleset(ruleset_choice)
+ruleset = choose_ruleset(ruleset_choice)
 
 display_message("The rulseset has been set to: #{ruleset[:name_str]}")
 
-score = {player: 0, computer: 0}
+score = { player: 0, computer: 0 }
 
 loop do
-  prompt( <<~PLAY
+  prompt(<<~PLAY
     It's your turn! What will you play?
     Current ruleset: #{ruleset[:name_str]}
     (Available options: #{ruleset[:valid].join(', ')})
     PLAY
-  )
+        )
 
   player_choice = get_valid_input(ruleset[:valid])
   computer_choice = ruleset[:valid].sample
@@ -222,7 +221,7 @@ loop do
   display_results(player_choice, computer_choice, winner)
   display_score(score)
 
-  if score.values.any? { |score| score >= 5 }
+  if score.values.any? { |value| value >= 5 }
     round_winner = score.key(5).to_s.capitalize
     display_message("***#{round_winner} wins this round!***")
     score = reset_score(score)
