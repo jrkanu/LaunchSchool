@@ -108,7 +108,6 @@ def unabbreviate(string)
 end
 
 def get_valid_input(valid_inputs)
-  # Use in place of Kernal#gets to only return input if valid.
   # Input considered valid if it is included in the passed array.
 
   user_input = unabbreviate(gets.chomp.downcase)
