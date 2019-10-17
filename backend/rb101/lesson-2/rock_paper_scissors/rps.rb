@@ -211,15 +211,19 @@ loop do
     PLAY
         )
 
+  # Get player and computer choices, determine winner
   player_choice = get_valid_input(ruleset[:valid])
   computer_choice = ruleset[:valid].sample
   winner = who_won?(ruleset, player_choice, computer_choice)
 
+  # Update score
   score = update_score(winner, score)
 
+  # Display results
   display_results(player_choice, computer_choice, winner)
   display_score(score)
 
+  # When someone reaches 5 points, announce the winner and reset score
   if score.values.any? { |value| value >= 5 }
     round_winner = score.key(5).to_s.capitalize
     display_message("***#{round_winner} wins this round!***")
