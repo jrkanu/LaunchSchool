@@ -196,6 +196,8 @@ prompt(<<~GREET
   GREET
       )
 
+# Determine the ruleset by which the who_won?() method will determine
+# the winner. References the constants defined above.
 ruleset_choice = get_valid_input(%w(classic kass))
 ruleset = choose_ruleset(ruleset_choice)
 
