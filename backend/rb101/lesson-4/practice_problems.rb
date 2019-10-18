@@ -106,7 +106,7 @@ puts '  ' + titalize('the catcher in the rye')
 puts '  ' + titalize('gone with the wind')
 
 # 10.) Modify the munsters hash such that each member of the Munster family has
-#      and additional "age_group" with a value of kid, senior or adult.
+#      an additional "age_group" with a value of kid, senior or adult.
 
 munsters = {
   "Herman" => { "age" => 32, "gender" => "male" },
